@@ -1,29 +1,40 @@
-var interval;
-function start() {
+function Game() {
+    this.intervalMS = 150 // how often the game ticks
+    this.maxTime = 100 // in-game minutes per day
 
-    var sink = new Appliance({name: 'sink'})
-    var actions = sink.getActions()
-    sink.doAction(actions[0])
+    this.time = 0;
+    this.clock = null;
+    this.startBtn = document.getElementById("start")
+    this.hand = document.getElementById("hand")
 
-    return
+    var tps = Math.floor(1000 / this.intervalMS)
+    var dayLength = Math.floor(this.maxTime / tps)
+    console.log(`tps = ${tps} - One day in ${dayLength} seconds`)
 
-    // const maxTime = 3600
-    // const actualMax = 360
-    // const increment = 10;
-    // var time = 0
-    //
-    // interval = setInterval(function() {
-    //     time = time < maxTime ? time+increment : increment
-    //
-    //     actualTime = (time / maxTime) * actualMax
-    //     actualTime = Math.floor(actualTime)
-    //     document.getElementById("hand").style.transform = `rotate(${actualTime}deg)`;
-    //     console.log(time, `rotate(${actualTime}deg)`)
-    // }, 1000)
-    // document.getElementById("start").disabled = true
-}
+    this.start = () => {
+        this.time = 0
+        this.clock = setInterval(() => {
+            if (this.time < this.maxTime) {
+                this.time += 1
+            } else {
+                // Time is either equal to or greater than the maxTime,
+                // we need to reset it. Since maxTime represents a full cycle,
+                // the next value should be the first increment
+                this.time = 1
+            }
+            this.renderClock(this.time / this.maxTime)
+        }, this.intervalMS)
+        this.startBtn.disabled = true
+    }
 
-function stop() {
-    document.getElementById("start").disabled = false
-    clearInterval(interval)
+    this.stop = () => {
+        this.startBtn.disabled = false
+        clearInterval(this.clock)
+    }
+
+    this.renderClock = (ratio) => {
+        var rotation = ratio * 360 // Max rotation degrees
+        rotation = Math.floor(rotation)
+        this.hand.style.transform = `rotate(${rotation}deg)`;
+    }
 }
