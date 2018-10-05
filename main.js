@@ -6,6 +6,7 @@ function Game() {
     this.clock = null;
     this.startBtn = document.getElementById("start")
     this.hand = document.getElementById("hand")
+    this.progress = document.getElementById("progress")
 
     var tps = Math.floor(1000 / this.intervalMS)
     var dayLength = Math.floor(this.maxTime / tps)
@@ -36,5 +37,6 @@ function Game() {
         var rotation = ratio * 360 // Max rotation degrees
         rotation = Math.floor(rotation)
         this.hand.style.transform = `rotate(${rotation}deg)`;
+        this.progress.style.width = `${Math.ceil(ratio * 100)}%`
     }
 }
